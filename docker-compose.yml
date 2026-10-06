@@ -1,0 +1,32 @@
+service:
+  db:
+    image:postgres:15
+  restart: always
+  environment:
+    postgres_DB: translations
+    postgres_USER: postgres
+    postgres_PASSWORD: postgres
+    volumes: 
+      my-data
+
+  init.sql
+  #mint bound
+
+
+  backend:
+    build: ./backend]
+    environment:
+            DATABASE_URL: postgres://postgres:postgres@db:5432/translations
+    port: 
+       "3001"
+    depens on:
+      translator
+
+
+
+
+
+
+
+
+  
