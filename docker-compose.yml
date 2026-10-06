@@ -1,4 +1,4 @@
-name: myproject
+name: app-translator
 
 services:
   db:
@@ -27,6 +27,7 @@ services:
       - "3001:3001"
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/translations
+      TRANSLATOR_URL: http://translator:5000/translate
     depends_on:
       - db
       - translator
