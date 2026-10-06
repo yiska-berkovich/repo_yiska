@@ -1,32 +1,49 @@
-service:
+name: myproject
+
+services:
   db:
-    image:postgres:15
-  restart: always
-  environment:
-    postgres_DB: translations
-    postgres_USER: postgres
-    postgres_PASSWORD: postgres
-    volumes: 
-      my-data
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: translations
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - appnet
 
-  init.sql
-  #mint bound
-
+  translator:
+    image: libretranslate/libretranslate
+    ports:
+      - "5000:5000"
+    networks:
+      - appnet
 
   backend:
-    build: ./backend]
+    build: ./backend
+    ports:
+      - "3001:3001"
     environment:
-            DATABASE_URL: postgres://postgres:postgres@db:5432/translations
-    port: 
-       "3001"
-    depens on:
-      translator
+      DATABASE_URL: postgres://postgres:postgres@db:5432/translations
+    depends_on:
+      - db
+      - translator
+    networks:
+      - appnet
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - appnet
 
+volumes:
+  pgdata:
 
-
-
-
-
-
-  
+networks:
+  appnet:
